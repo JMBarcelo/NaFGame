@@ -15,6 +15,14 @@ body {
   background: white;
 }
 
+.wall_tile {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  display: inline-block;
+  background: green;
+}
+
 .warrior_tile {
   height: 100px;
   width: 100px;
