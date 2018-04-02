@@ -1,0 +1,24 @@
+body {
+  background: grey;
+}
+
+#game_board {
+  margin: 40px;
+  border: solid 1px black;
+}
+
+.empty_tile {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  display: inline-block;
+  background: white;
+}
+
+.warrior_tile {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  display: inline-block;
+  background: blue;
+}
