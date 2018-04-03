@@ -21,7 +21,7 @@ body {
   border: solid 1px black;
   display: inline-block;
   background-size: cover;
-  background-image: url("../img/wall.jpg")
+  background-image: url("../img/wall.jpg");
 }
 
 .warrior_tile {
