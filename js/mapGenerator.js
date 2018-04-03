@@ -1,6 +1,7 @@
 // Valores iniciales de filas y columnas y posición X e Y inicial del personaje en el centro del tablero
 
-var cols = 100;
+var cols = 30;
+var rows = 30;
 
 var posX = parseInt(cols/2);
 
@@ -15,7 +16,6 @@ function pad(n) {
 
 posX = pad(posX);
 
-var rows = 100;
 
 var posY = parseInt(rows/2);
 
@@ -46,7 +46,6 @@ for (var j = 0; j < rows; j++) {
 
 $(document).ready(function() {
 
-  console.log(roomsGenerator());
   var html = "";
 
   //Creación de las losetas por filas y columnas
@@ -78,7 +77,27 @@ $(document).ready(function() {
     for (var j = 0; j < array[i].length; j++) {
       if(array[i][j] == 'w') {
         document.getElementById(pad(j) + pad(i)).classList.add('wall_tile');
+        document.getElementById(pad(j) + pad(i)).classList.remove('empty_tile');
+      }
+    }
+  }
+
+  while (document.getElementById(posX + posY).classList.contains("wall_tile")) {
+    for (var i = 0; i < array.length; i++) {
+      for (var j = 0; j < array[i].length; j++) {
+        document.getElementById(pad(j) + pad(i)).classList.remove('wall_tile');
         document.getElementById(pad(j) + pad(i)).classList.add('empty_tile');
+      }
+    }
+
+    array = roomsGenerator();
+
+    for (var i = 0; i < array.length; i++) {
+      for (var j = 0; j < array[i].length; j++) {
+        if(array[i][j] == 'w') {
+          document.getElementById(pad(j) + pad(i)).classList.add('wall_tile');
+          document.getElementById(pad(j) + pad(i)).classList.remove('empty_tile');
+        }
       }
     }
   }
@@ -107,25 +126,41 @@ $(document).ready(function() {
 
   $(document).on('keydown', function(event) {
     if ( event.which == 65 && parseInt(posX) - 1 >= 0) {
-      cleanWarrior(warrior);
       posX = pad(parseInt(posX) - 1);
-      warrior = document.getElementById(posX + posY)
-      setWarrior(warrior);
+      if (document.getElementById(posX + posY).classList.contains("empty_tile")){
+        cleanWarrior(warrior);
+        warrior = document.getElementById(posX + posY)
+        setWarrior(warrior);
+      } else {
+        posX = pad(parseInt(posX) + 1);        
+      }
     } else if (event.which == 87 && parseInt(posY) - 1 >= 0) {
-      cleanWarrior(warrior);
       posY = pad(parseInt(posY) - 1);
-      warrior = document.getElementById(posX + posY)
-      setWarrior(warrior);
+      if (document.getElementById(posX + posY).classList.contains("empty_tile")){
+        cleanWarrior(warrior);
+        warrior = document.getElementById(posX + posY)
+        setWarrior(warrior);
+      } else {
+        posY = pad(parseInt(posY) + 1);        
+      }
     } else if (event.which == 68 && parseInt(posX) + 1 < cols) {
-      cleanWarrior(warrior);
       posX = pad(parseInt(posX) + 1);
-      warrior = document.getElementById(posX + posY)
-      setWarrior(warrior);
+      if (document.getElementById(posX + posY).classList.contains("empty_tile")){
+        cleanWarrior(warrior);
+        warrior = document.getElementById(posX + posY)
+        setWarrior(warrior);
+      } else {
+        posX = pad(parseInt(posX) - 1);        
+      }
     } else if (event.which == 83 && parseInt(posY) + 1 < rows) {  
-      cleanWarrior(warrior);
       posY = pad(parseInt(posY) + 1);
-      warrior = document.getElementById(posX + posY)
-      setWarrior(warrior);
+      if (document.getElementById(posX + posY).classList.contains("empty_tile")){
+        cleanWarrior(warrior);
+        warrior = document.getElementById(posX + posY)
+        setWarrior(warrior);
+      } else {
+        posY = pad(parseInt(posY) - 1);        
+      }
     } 
   })
 })

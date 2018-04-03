@@ -2,7 +2,7 @@ var DungeonGenerator = (function(){
 
   var MAXSIZE, MINSIZE, ROWS, COLS, BORDER, ATTEMPTS, WALL='W', EMPTY='E', ROOMS;
 
-  function isNotOverlapping(floorMap, room) {
+  function isNotOverlapping(floorMap, room) { //Compruebo que no se superpongan las habitaciones
     var status = true;
     for (var i = room.row - 1; i < room.row + room.h + 1  ; i++ ) {
       for (var j = room.col-1; j < room.col + room.w +1; j++) {
@@ -15,21 +15,21 @@ var DungeonGenerator = (function(){
     return status;
   }
 
-  function linkStraightH(floorMap, r1, r2){
+  function linkStraightH(floorMap, r1, r2){ //Une recto en la horizontal
     var inc = r1.col < r2.col ? 1 : -1;
     for (var i = r1.col; i !== r2.col; i+=inc) {
       floorMap[r1.row][i] = EMPTY;
     }
   };
 
-  function linkStraightV(floorMap, r1, r2){
+  function linkStraightV(floorMap, r1, r2){ //Une recto en la vertical
     var inc = r1.row < r2.row ? 1 : -1;
     for (var i = r1.row; i !== r2.row; i+=inc) {
       floorMap[i][r1.col] = EMPTY;
     }
   };
 
-  function link2Steps(floorMap, r1, r2) {
+  function link2Steps(floorMap, r1, r2) { //Une dos losetas
     var flipCoin = Math.floor(Math.random()*2);
     // TOP LEFT
     if(r1.row > r2.row && r1.col > r2.col) {
@@ -116,13 +116,13 @@ var DungeonGenerator = (function(){
 
       var cfg = config ? config : {};
 
-      ROWS = cfg.rows || 31;
-      COLS = cfg.cols || 51;
-      MAXSIZE = cfg.maxRoomSize || 7;
-      MINSIZE= cfg.minRoomSize || 3;
+      ROWS = cfg.rows || 99;
+      COLS = cfg.cols || 99;
+      MAXSIZE = cfg.maxRoomSize || 20;
+      MINSIZE= cfg.minRoomSize || 7;
       BORDER = cfg.padding || 2;
       ATTEMPTS = cfg.maxAttempts || 500;
-      ROOMS = cfg.rooms || 15;
+      ROOMS = cfg.rooms || 99;
 
       var floorMap = [];
       for (var i = 0; i < ROWS; i++) {
