@@ -20,7 +20,8 @@ body {
   width: 100px;
   border: solid 1px black;
   display: inline-block;
-  background: green;
+  background-size: cover;
+  background-image: url("../img/wall.jpg")
 }
 
 .warrior_tile {
@@ -28,5 +29,29 @@ body {
   width: 100px;
   border: solid 1px black;
   display: inline-block;
+  background-size: cover;
+  background: orange;
+}
+
+.tt_in_tile {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  display: inline-block;
+  background-size: cover;
   background: blue;
+}
+
+.tt_out_tile {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  display: inline-block;
+  background-size: cover;
+  background: purple;
+}
+
+.invis {
+  background-size: cover;
+  background-image: url("../img/wall.jpg") !important;
 }

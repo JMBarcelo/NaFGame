@@ -4,8 +4,8 @@ var DungeonGenerator = (function(){
 
   function isNotOverlapping(floorMap, room) { //Compruebo que no se superpongan las habitaciones
     var status = true;
-    for (var i = room.row - 1; i < room.row + room.h + 1  ; i++ ) {
-      for (var j = room.col-1; j < room.col + room.w +1; j++) {
+    for (var i = room.row - 1; i < room.row + room.h + 1; i++ ) {
+      for (var j = room.col - 1; j < room.col + room.w + 1; j++) {
         if (floorMap[i][j] !== WALL) {
             status = false;
             break;
@@ -15,7 +15,7 @@ var DungeonGenerator = (function(){
     return status;
   }
 
-  function linkStraightH(floorMap, r1, r2){ //Une recto en la horizontal
+  /*function linkStraightH(floorMap, r1, r2){ //Une recto en la horizontal
     var inc = r1.col < r2.col ? 1 : -1;
     for (var i = r1.col; i !== r2.col; i+=inc) {
       floorMap[r1.row][i] = EMPTY;
@@ -82,7 +82,7 @@ var DungeonGenerator = (function(){
       if(!link2Steps(floorMap, r1, r2)) // if r2 is not on top
         link2Steps(floorMap, r2, r1);   // r1 is on top
     }
-  }
+  }*/
 
   function randomEvenOdd (min, max) {
       if(max === min) return max;
@@ -151,7 +151,7 @@ var DungeonGenerator = (function(){
         return Math.sqrt(d2);
       };
 
-      roomsLinked.push(roomsToLink.pop());
+      /*roomsLinked.push(roomsToLink.pop());
       while(roomsToLink.length) {
         var r1 = roomsLinked[roomsLinked.length - 1];
         var r2 = roomsToLink.sort(function (a,b){
@@ -162,7 +162,7 @@ var DungeonGenerator = (function(){
         linkRooms(floorMap,r1,r2);
         roomsLinked.push(r2);
         r1 = r2;
-      }
+      }*/
       return floorMap.map(function(row,i){
         return row.map(function(cell, j){
           return {cellType: cell === WALL ? 'wall' : 'empty'};
