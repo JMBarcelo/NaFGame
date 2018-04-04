@@ -56,7 +56,7 @@ var DungeonGenerator = (function() {
     return out;
   }
 
-  //Función autoejecutable que me genera el valor de cada casilla
+  //Función autoejecutada que me genera el valor de cada casilla
 
   var DungeonGenerator = {
     generate: function(config) {

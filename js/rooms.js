@@ -1,6 +1,5 @@
 var roomsGenerator = function() {
-
-    //Función que crea el array a modo de mapa con los parámetros iniciales
+  //Función que crea el array a modo de mapa con los parámetros iniciales
 
   function updateMap() {
     var floorMap = DungeonGenerator.generate({

@@ -65,16 +65,19 @@ $(document).ready(function() {
     }
   }
 
+  //Función para obtener las posiciones X e Y de un elemento en función de su id (coordenadas en el tablero)
+
   var posX;
   var posY;
 
-  function XYcalculator(className, inc) {
+  function XYcalculator(className, next) {
+    //"next" nos permite elegir las siguientes posiciones en el eje X (útil para posicionar al héroe)
     coords = document.getElementsByClassName(className)[0].id.split("");
-    posX = pad(parseInt("" + coords[0] + coords[1]) + inc);
+    posX = pad(parseInt("" + coords[0] + coords[1]) + next);
     posY = "" + coords[2] + coords[3];
   }
 
-  //Generación de los teletransportes
+  //Generación de los teletransportes (escaleras) de entrada
 
   var tt_in = 0;
   var tt_out = 0;
@@ -104,6 +107,8 @@ $(document).ready(function() {
       }
     }
   }
+
+  //Generación de los teletransportes (escaleras) de salida
 
   for (i = 2; i < rows - 2; i++) {
     for (j = 2; j < cols - 2; j++) {
@@ -162,7 +167,7 @@ $(document).ready(function() {
     allRoomsArray.push(roomArray);
   }
 
-  //Revelamos la habitación
+  //Función que revela (quita ".invis") a una habitación
 
   function revealRoom(room_pos) {
     for (i = 0; i < allRoomsArray[room_pos].length; i++) {
@@ -174,7 +179,7 @@ $(document).ready(function() {
     }
   }
 
-  //Seleccionamos la loseta central de la habitación
+  //Función que selecciona la loseta central de la habitación
 
   var centralX;
   var centralY;
@@ -188,7 +193,7 @@ $(document).ready(function() {
     );
   }
 
-  //Situamos la cámara en el centro de la habitación
+  //Función que sitúa la cámara en el centro de la habitación
 
   function scroll(n) {
     centralTile(n);
@@ -206,7 +211,7 @@ $(document).ready(function() {
     return Math.random() * (max - min) + min;
   }
 
-  //Generador de enemigos
+  //Generador de enemigos random
 
   function monsterGenerator(room_pos) {
     var random_row;
@@ -251,7 +256,7 @@ $(document).ready(function() {
     }
   }
 
-  //Situamos al personaje al lado de la entrada
+  //Situamos al personaje en la casilla siguiente a las escaleras de entrada
 
   var coords =
     parseInt(document.getElementsByClassName("tt_in_00")[0].id) + 100;
@@ -261,7 +266,6 @@ $(document).ready(function() {
     coords = "" + coords;
   }
 
-  //var hero = new Hero('Lolo', 100, 20, 5, warrior);
   warrior = document.getElementById(pad(coords));
 
   function setWarrior(w) {
@@ -372,7 +376,8 @@ $(document).ready(function() {
         } else {
           posY = pad(parseInt(posY) - 1);
         }
-      } else if (event.which == 32) {
+        //Tecla N --> Cambio de turno
+      } else if (event.which == 78) {
         endTurn();
         enemiesTurn();
         nextTurn();
