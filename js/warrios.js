@@ -1,5 +1,6 @@
 // Warrior
-function Warrior(health, strength, movement) {
+function Warrior(health, strength, movement, position) {
+  this.position = position;
   this.movement = movement;
   this.health = health;
   this.strength = strength;
@@ -18,8 +19,8 @@ Warrior.prototype.move = function(){
 }
 
 // Hero
-function Hero(name, health, strength, movement) {
-  Warrior.call(this, health, strength, movement);
+function Hero(name, health, strength, movement, position) {
+  Warrior.call(this, health, strength, movement, position);
   this.name = name;
 }
 
@@ -36,8 +37,8 @@ Hero.prototype.receiveDamage = function(damage){
 }
 
 // Monster
-function Monster(kindof, health, strength, movement) {
-  Soldier.call(this, health, strength, movement);
+function Monster(kindof, health, strength, movement, position) {
+  Soldier.call(this, health, strength, movement, position);
   this.kindof = kindof;
 }
 

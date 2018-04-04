@@ -1,7 +1,7 @@
-// Valores iniciales de filas y columnas y función para
+// Valores iniciales de filas y columnas y función para padificar un número con 0's por delante en caso necesario y convertirlo en string
 
-var cols = 100;
-var rows = 100;
+var cols = 100; //Máximo 100
+var rows = 100; //Máximo 100
 
 function pad(n) {
   if (n < 10) {
@@ -12,31 +12,23 @@ function pad(n) {
   return n;
 }
 
-// Inicio de las funciones al cargarse el DOM
-
-// Creación de los arrays de losetas
-
-var indexv = [];
-var indexh = [];
-
-for (var i = 0; i < cols; i++) {
-  if (i < 10) {
-    indexv.push("0" + i);
-  } else {
-    indexv.push("" + i);
-  }
-}
-
-for (var j = 0; j < rows; j++) {
-  if (j < 10) {
-    indexh.push("0" + j);
-  } else {
-    indexh.push("" + j);
-  }
-}
+// ----- Inicio de las funciones al cargarse el DOM -------
 
 $(document).ready(function() {
+  // Creación de los arrays de losetas
+
   var html = "";
+
+  var indexv = [];
+  var indexh = [];
+
+  for (var i = 0; i < cols; i++) {
+    indexv.push(pad(i));
+  }
+
+  for (var j = 0; j < rows; j++) {
+    indexh.push(pad(j));
+  }
 
   //Creación de las losetas por filas y columnas
 
@@ -44,8 +36,7 @@ $(document).ready(function() {
     html += '<div id="row_' + el + '">';
     indexv.forEach(function(e) {
       html += '<div class="empty_tile" id="' + e + el + '">';
-      //html += ' name="' + e + el + '">';
-      html += e + el;
+      html += e + el; //Para identificar la loseta durante la creación, luego debería quitarse.
       html += "</div>";
     });
     html += "</div>";
@@ -170,19 +161,19 @@ $(document).ready(function() {
     }
     allRoomsArray.push(roomArray);
   }
-  
+
   //Revelamos la habitación
-  
+
   function revealRoom(room_pos) {
     for (i = 0; i < allRoomsArray[room_pos].length; i++) {
       for (j = 0; j < allRoomsArray[room_pos][i].length; j++) {
         document
-        .getElementById(allRoomsArray[room_pos][i][j])
-        .classList.remove("invis");
+          .getElementById(allRoomsArray[room_pos][i][j])
+          .classList.remove("invis");
       }
     }
   }
-  
+
   //Seleccionamos la loseta central de la habitación
 
   var centralX;
@@ -195,10 +186,9 @@ $(document).ready(function() {
     central_tile = document.getElementById(
       allRoomsArray[room_pos][centralY][centralX]
     );
-    console.log(central_tile);
   }
 
-  //Situamos la cámara en el guerrero
+  //Situamos la cámara en el centro de la habitación
 
   function scroll(n) {
     centralTile(n);
@@ -206,12 +196,11 @@ $(document).ready(function() {
     var absoluteElementTop = elementRect.top + window.pageYOffset;
     var absoluteElementLeft = elementRect.left + window.pageXOffset;
     var middleY = absoluteElementTop - window.innerHeight / 2 - 40;
-    var middleX = absoluteElementLeft - window.innerWidth / 2;    
+    var middleX = absoluteElementLeft - window.innerWidth / 2;
     window.scrollTo(middleX, middleY);
   }
 
-
-  //Generador de randoms
+  //Generador de números random
 
   function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -230,11 +219,9 @@ $(document).ready(function() {
       random_row = Math.round(
         randomNumber(3, allRoomsArray[room_pos].length - 1)
       );
-      console.log(allRoomsArray[room_pos].length - 1 - random_row);
       random_tile = Math.round(
-        randomNumber(0, allRoomsArray[room_pos][0].length - 1)
+        randomNumber(0, allRoomsArray[room_pos][0].length - 2)
       );
-      console.log(allRoomsArray[room_pos][0].length - random_tile);
       document
         .getElementById(allRoomsArray[room_pos][random_row][random_tile])
         .classList.add("monster_tile");
@@ -251,6 +238,19 @@ $(document).ready(function() {
     scroll(n);
   }
 
+  //Comportamiento al salir de una habitación
+
+  function exitRoom(room_pos) {
+    room_pos--;
+    for (i = 0; i < allRoomsArray[room_pos].length; i++) {
+      for (j = 0; j < allRoomsArray[room_pos][i].length; j++) {
+        document
+          .getElementById(allRoomsArray[room_pos][i][j])
+          .classList.add("veiled");
+      }
+    }
+  }
+
   //Situamos al personaje al lado de la entrada
 
   var coords =
@@ -260,7 +260,9 @@ $(document).ready(function() {
   } else {
     coords = "" + coords;
   }
-  var warrior = document.getElementById(pad(coords));
+
+  //var hero = new Hero('Lolo', 100, 20, 5, warrior);
+  warrior = document.getElementById(pad(coords));
 
   function setWarrior(w) {
     w.classList.add("warrior_tile");
@@ -275,82 +277,105 @@ $(document).ready(function() {
   setWarrior(warrior);
   enterNewRoom(0);
 
-  //Movemos al guerrero
+  //Función de cambio de casilla
+
+  function newTile() {
+    cleanWarrior(warrior);
+    warrior = document.getElementById(posX + posY);
+    setWarrior(warrior);
+  }
+
+  //Función de fin de turno
+
+  var clicker = true;
+
+  function endTurn() {
+    clicker = false;
+  }
+
+  //Función de turno enemigo
+
+  function enemiesTurn() {}
+
+  //Función de turno siguiente
+
+  function nextTurn() {
+    clicker = true;
+    //Restaurar puntos de movimiento
+  }
+
+  //Detectamos pulsaciones al mover al guerrero y pasar turno
 
   XYcalculator("warrior_tile", 0);
 
   tt = 1;
 
   $(document).on("keydown", function(event) {
-    //Tecla A
-    if (event.which == 65 && parseInt(posX) - 1 >= 0) {
-      posX = pad(parseInt(posX) - 1);
-      if (
-        document.getElementById(posX + posY).classList.contains("empty_tile")
-      ) {
-        cleanWarrior(warrior);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-      } else {
-        posX = pad(parseInt(posX) + 1);
-      }
-      //Tecla W
-    } else if (event.which == 87 && parseInt(posY) - 1 >= 0) {
-      posY = pad(parseInt(posY) - 1);
-      if (
-        document.getElementById(posX + posY).classList.contains("empty_tile")
-      ) {
-        cleanWarrior(warrior);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-      } else {
-        posY = pad(parseInt(posY) + 1);
-      }
-      //Tecla D
-    } else if (event.which == 68 && parseInt(posX) + 1 < cols) {
-      posX = pad(parseInt(posX) + 1);
-      if (
-        document.getElementById(posX + posY).classList.contains("empty_tile")
-      ) {
-        cleanWarrior(warrior);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-        //Entrada por la izquierda en una escalera de salida
-      } else if (
-        document.getElementById(posX + posY).classList.contains("tt_out_tile")
-      ) {
-        cleanWarrior(warrior);
-        XYcalculator("tt_in_" + pad(tt), 1);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-        enterNewRoom(tt);
-        monsterGenerator(tt);
-        tt++;
-      } else {
+    if (clicker) {
+      //Tecla A
+      if (event.which == 65 && parseInt(posX) - 1 >= 0) {
         posX = pad(parseInt(posX) - 1);
-      }
-      //Tecla S
-    } else if (event.which == 83 && parseInt(posY) + 1 < rows) {
-      posY = pad(parseInt(posY) + 1);
-      if (
-        document.getElementById(posX + posY).classList.contains("empty_tile")
-      ) {
-        cleanWarrior(warrior);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-        //Entrada por la arriba en una escalera de salida
-      } else if (
-        document.getElementById(posX + posY).classList.contains("tt_out_tile")
-      ) {
-        cleanWarrior(warrior);
-        XYcalculator("tt_in_" + pad(tt), 1);
-        warrior = document.getElementById(posX + posY);
-        setWarrior(warrior);
-        enterNewRoom(tt);
-        monsterGenerator(tt);
-        tt++;
-      } else {
+        if (
+          document.getElementById(posX + posY).classList.contains("empty_tile")
+        ) {
+          newTile();
+        } else {
+          posX = pad(parseInt(posX) + 1);
+        }
+        //Tecla W
+      } else if (event.which == 87 && parseInt(posY) - 1 >= 0) {
         posY = pad(parseInt(posY) - 1);
+        if (
+          document.getElementById(posX + posY).classList.contains("empty_tile")
+        ) {
+          newTile();
+        } else {
+          posY = pad(parseInt(posY) + 1);
+        }
+        //Tecla D
+      } else if (event.which == 68 && parseInt(posX) + 1 < cols) {
+        posX = pad(parseInt(posX) + 1);
+        if (
+          document.getElementById(posX + posY).classList.contains("empty_tile")
+        ) {
+          newTile();
+          //Entrada por la izquierda en una escalera de salida
+        } else if (
+          document.getElementById(posX + posY).classList.contains("tt_out_tile")
+        ) {
+          exitRoom(tt);
+          XYcalculator("tt_in_" + pad(tt), 1);
+          newTile();
+          enterNewRoom(tt);
+          monsterGenerator(tt);
+          tt++;
+        } else {
+          posX = pad(parseInt(posX) - 1);
+        }
+        //Tecla S
+      } else if (event.which == 83 && parseInt(posY) + 1 < rows) {
+        posY = pad(parseInt(posY) + 1);
+        if (
+          document.getElementById(posX + posY).classList.contains("empty_tile")
+        ) {
+          newTile();
+          //Entrada por la arriba en una escalera de salida
+        } else if (
+          document.getElementById(posX + posY).classList.contains("tt_out_tile")
+        ) {
+          exitRoom(tt);
+          XYcalculator("tt_in_" + pad(tt), 1);
+          newTile();
+          enterNewRoom(tt);
+          monsterGenerator(tt);
+          tt++;
+        } else {
+          posY = pad(parseInt(posY) - 1);
+        }
+      } else if (event.which == 32) {
+        endTurn();
+        enemiesTurn();
+        nextTurn();
       }
     }
   });
