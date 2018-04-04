@@ -23,7 +23,7 @@ var DungeonGenerator = (function() {
     return status;
   }
 
-  //Función que devuelve un número aleatorio
+  //Función que devuelve un número aleatorio. La uso para generar las habitaciones a continuación
 
   function randomEvenOdd(min, max) {
     if (max === min) return max;
@@ -67,7 +67,7 @@ var DungeonGenerator = (function() {
       MAXSIZE = cfg.maxRoomSize || 20;
       MINSIZE = cfg.minRoomSize || 7;
       BORDER = cfg.padding || 2;
-      ATTEMPTS = cfg.maxAttempts || 500;
+      ATTEMPTS = cfg.maxAttempts || 100;
       ROOMS = cfg.rooms || 99;
 
       var floorMap = [];

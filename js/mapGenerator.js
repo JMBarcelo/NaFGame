@@ -1,4 +1,4 @@
-// Valores iniciales de filas y columnas y posición X e Y inicial del personaje en el centro del tablero
+// Valores iniciales de filas y columnas y función para
 
 var cols = 100;
 var rows = 100;
@@ -11,6 +11,8 @@ function pad(n) {
   }
   return n;
 }
+
+// Inicio de las funciones al cargarse el DOM
 
 // Creación de los arrays de losetas
 
@@ -33,8 +35,6 @@ for (var j = 0; j < rows; j++) {
   }
 }
 
-// Inicio de las funciones al cargarse el DOM
-
 $(document).ready(function() {
   var html = "";
 
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
   //Variación del ancho del body para poder superar el overflow del tablero
 
-  $("body,html").css("min-width", 82 + cols * 100);
+  $("body,html").css("min-width", 82 + cols * 80);
 
   //implementación del tablero en el DOM
 
@@ -170,33 +170,85 @@ $(document).ready(function() {
     }
     allRoomsArray.push(roomArray);
   }
-
+  
   //Revelamos la habitación
-
-  function revealRoom(moor) {
-    for (i = 0; i < allRoomsArray[moor].length; i++) {
-      for (j = 0; j < allRoomsArray[moor][i].length; j++) {
+  
+  function revealRoom(room_pos) {
+    for (i = 0; i < allRoomsArray[room_pos].length; i++) {
+      for (j = 0; j < allRoomsArray[room_pos][i].length; j++) {
         document
-          .getElementById(allRoomsArray[moor][i][j])
-          .classList.remove("invis");
+        .getElementById(allRoomsArray[room_pos][i][j])
+        .classList.remove("invis");
       }
     }
+  }
+  
+  //Seleccionamos la loseta central de la habitación
+
+  var centralX;
+  var centralY;
+  var central_tile;
+
+  function centralTile(room_pos) {
+    centralY = Math.round(allRoomsArray[room_pos].length / 2);
+    centralX = Math.round(allRoomsArray[room_pos][centralY].length / 2);
+    central_tile = document.getElementById(
+      allRoomsArray[room_pos][centralY][centralX]
+    );
+    console.log(central_tile);
   }
 
   //Situamos la cámara en el guerrero
 
-  function scroll() {
-    window.scrollTo(
-      warrior.getBoundingClientRect().right - window.innerWidth / 2,
-      warrior.getBoundingClientRect().bottom - window.innerHeight / 2
-    );
+  function scroll(n) {
+    centralTile(n);
+    var elementRect = central_tile.getBoundingClientRect();
+    var absoluteElementTop = elementRect.top + window.pageYOffset;
+    var absoluteElementLeft = elementRect.left + window.pageXOffset;
+    var middleY = absoluteElementTop - window.innerHeight / 2 - 40;
+    var middleX = absoluteElementLeft - window.innerWidth / 2;    
+    window.scrollTo(middleX, middleY);
   }
 
-  //Comportamiento al entrar en una casilla
 
-  function enterNewTile(n) {
+  //Generador de randoms
+
+  function randomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  //Generador de enemigos
+
+  function monsterGenerator(room_pos) {
+    var random_row;
+    var random_tile;
+    for (
+      i = 0;
+      i < randomNumber(0, Math.trunc(allRoomsArray[room_pos].length / 2));
+      i++
+    ) {
+      random_row = Math.round(
+        randomNumber(3, allRoomsArray[room_pos].length - 1)
+      );
+      console.log(allRoomsArray[room_pos].length - 1 - random_row);
+      random_tile = Math.round(
+        randomNumber(0, allRoomsArray[room_pos][0].length - 1)
+      );
+      console.log(allRoomsArray[room_pos][0].length - random_tile);
+      document
+        .getElementById(allRoomsArray[room_pos][random_row][random_tile])
+        .classList.add("monster_tile");
+      document
+        .getElementById(allRoomsArray[room_pos][random_row][random_tile])
+        .classList.remove("empty_tile");
+    }
+  }
+
+  //Comportamiento al entrar en una habitación
+
+  function enterNewRoom(n) {
     revealRoom(n);
-    scroll();
+    scroll(n);
   }
 
   //Situamos al personaje al lado de la entrada
@@ -221,7 +273,7 @@ $(document).ready(function() {
   }
 
   setWarrior(warrior);
-  enterNewTile(0);
+  enterNewRoom(0);
 
   //Movemos al guerrero
 
@@ -230,6 +282,7 @@ $(document).ready(function() {
   tt = 1;
 
   $(document).on("keydown", function(event) {
+    //Tecla A
     if (event.which == 65 && parseInt(posX) - 1 >= 0) {
       posX = pad(parseInt(posX) - 1);
       if (
@@ -241,6 +294,7 @@ $(document).ready(function() {
       } else {
         posX = pad(parseInt(posX) + 1);
       }
+      //Tecla W
     } else if (event.which == 87 && parseInt(posY) - 1 >= 0) {
       posY = pad(parseInt(posY) - 1);
       if (
@@ -252,6 +306,7 @@ $(document).ready(function() {
       } else {
         posY = pad(parseInt(posY) + 1);
       }
+      //Tecla D
     } else if (event.which == 68 && parseInt(posX) + 1 < cols) {
       posX = pad(parseInt(posX) + 1);
       if (
@@ -260,6 +315,7 @@ $(document).ready(function() {
         cleanWarrior(warrior);
         warrior = document.getElementById(posX + posY);
         setWarrior(warrior);
+        //Entrada por la izquierda en una escalera de salida
       } else if (
         document.getElementById(posX + posY).classList.contains("tt_out_tile")
       ) {
@@ -267,11 +323,13 @@ $(document).ready(function() {
         XYcalculator("tt_in_" + pad(tt), 1);
         warrior = document.getElementById(posX + posY);
         setWarrior(warrior);
-        enterNewTile(tt);
+        enterNewRoom(tt);
+        monsterGenerator(tt);
         tt++;
       } else {
         posX = pad(parseInt(posX) - 1);
       }
+      //Tecla S
     } else if (event.which == 83 && parseInt(posY) + 1 < rows) {
       posY = pad(parseInt(posY) + 1);
       if (
@@ -280,6 +338,7 @@ $(document).ready(function() {
         cleanWarrior(warrior);
         warrior = document.getElementById(posX + posY);
         setWarrior(warrior);
+        //Entrada por la arriba en una escalera de salida
       } else if (
         document.getElementById(posX + posY).classList.contains("tt_out_tile")
       ) {
@@ -287,7 +346,8 @@ $(document).ready(function() {
         XYcalculator("tt_in_" + pad(tt), 1);
         warrior = document.getElementById(posX + posY);
         setWarrior(warrior);
-        enterNewTile(tt);
+        enterNewRoom(tt);
+        monsterGenerator(tt);
         tt++;
       } else {
         posY = pad(parseInt(posY) - 1);
