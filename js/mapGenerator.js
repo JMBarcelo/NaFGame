@@ -3,6 +3,8 @@
 var cols = 100; //Máximo 100
 var rows = 100; //Máximo 100
 
+var turn = 0; //Contador de turnos
+
 function pad(n) {
   if (n < 10) {
     n = "0" + n;
@@ -213,6 +215,9 @@ $(document).ready(function() {
 
   //Generador de enemigos random
 
+  var combat = new Combat();
+  var monster_pos = [];
+
   function monsterGenerator(room_pos) {
     var random_row;
     var random_tile;
@@ -232,8 +237,20 @@ $(document).ready(function() {
         .classList.add("monster_tile");
       document
         .getElementById(allRoomsArray[room_pos][random_row][random_tile])
+        .setAttribute("name", i);
+      document
+        .getElementById(allRoomsArray[room_pos][random_row][random_tile])
         .classList.remove("empty_tile");
+      monster_pos.push(
+        document.getElementById(
+          allRoomsArray[room_pos][random_row][random_tile]
+        )
+      );
+      combat.addMonster(
+        new Monster("Orc Archer", 50, 10, 1, 5, monster_pos[i])
+      );
     }
+    console.log(combat.monstersArray);
   }
 
   //Comportamiento al entrar en una habitación
@@ -241,6 +258,9 @@ $(document).ready(function() {
   function enterNewRoom(n) {
     revealRoom(n);
     scroll(n);
+    if (n > 0) {
+      monsterGenerator(n);
+    }
   }
 
   //Comportamiento al salir de una habitación
@@ -256,7 +276,7 @@ $(document).ready(function() {
     }
   }
 
-  //Situamos al personaje en la casilla siguiente a las escaleras de entrada
+  //Posicionamos al personaje en la casilla siguiente a las escaleras de entrada
 
   var coords =
     parseInt(document.getElementsByClassName("tt_in_00")[0].id) + 100;
@@ -266,7 +286,15 @@ $(document).ready(function() {
     coords = "" + coords;
   }
 
-  warrior = document.getElementById(pad(coords));
+  var warrior_pos = document.getElementById(pad(coords));
+
+  //Me creo un guerrero inicial
+
+  var hero = new Hero("Lolo", 100, 20, 2, 100, warrior_pos);
+  var movement = hero.movement;
+  var attacks = hero.attacks;
+
+  //Funciones para pintar al guerrero en el tablero
 
   function setWarrior(w) {
     w.classList.add("warrior_tile");
@@ -278,15 +306,15 @@ $(document).ready(function() {
     w.classList.remove("warrior_tile");
   }
 
-  setWarrior(warrior);
+  setWarrior(warrior_pos);
   enterNewRoom(0);
 
   //Función de cambio de casilla
 
   function newTile() {
-    cleanWarrior(warrior);
-    warrior = document.getElementById(posX + posY);
-    setWarrior(warrior);
+    cleanWarrior(warrior_pos);
+    warrior_pos = document.getElementById(posX + posY);
+    setWarrior(warrior_pos);
   }
 
   //Función de fin de turno
@@ -294,18 +322,20 @@ $(document).ready(function() {
   var clicker = true;
 
   function endTurn() {
+    turn++;
     clicker = false;
   }
 
   //Función de turno enemigo
 
-  function enemiesTurn() {}
+  //function enemiesTurn() {}
 
   //Función de turno siguiente
 
   function nextTurn() {
+    attacks = hero.attacks;
+    movement = hero.movement;
     clicker = true;
-    //Restaurar puntos de movimiento
   }
 
   //Detectamos pulsaciones al mover al guerrero y pasar turno
@@ -313,73 +343,107 @@ $(document).ready(function() {
   XYcalculator("warrior_tile", 0);
 
   tt = 1;
+  var arr_ind;
 
   $(document).on("keydown", function(event) {
     if (clicker) {
-      //Tecla A
-      if (event.which == 65 && parseInt(posX) - 1 >= 0) {
-        posX = pad(parseInt(posX) - 1);
-        if (
-          document.getElementById(posX + posY).classList.contains("empty_tile")
-        ) {
-          newTile();
-        } else {
-          posX = pad(parseInt(posX) + 1);
-        }
-        //Tecla W
-      } else if (event.which == 87 && parseInt(posY) - 1 >= 0) {
-        posY = pad(parseInt(posY) - 1);
-        if (
-          document.getElementById(posX + posY).classList.contains("empty_tile")
-        ) {
-          newTile();
-        } else {
-          posY = pad(parseInt(posY) + 1);
-        }
-        //Tecla D
-      } else if (event.which == 68 && parseInt(posX) + 1 < cols) {
-        posX = pad(parseInt(posX) + 1);
-        if (
-          document.getElementById(posX + posY).classList.contains("empty_tile")
-        ) {
-          newTile();
-          //Entrada por la izquierda en una escalera de salida
-        } else if (
-          document.getElementById(posX + posY).classList.contains("tt_out_tile")
-        ) {
-          exitRoom(tt);
-          XYcalculator("tt_in_" + pad(tt), 1);
-          newTile();
-          enterNewRoom(tt);
-          monsterGenerator(tt);
-          tt++;
-        } else {
+      if (movement > 0) {
+        //Tecla A
+        if (event.which == 65) {
           posX = pad(parseInt(posX) - 1);
-        }
-        //Tecla S
-      } else if (event.which == 83 && parseInt(posY) + 1 < rows) {
-        posY = pad(parseInt(posY) + 1);
-        if (
-          document.getElementById(posX + posY).classList.contains("empty_tile")
-        ) {
-          newTile();
-          //Entrada por la arriba en una escalera de salida
-        } else if (
-          document.getElementById(posX + posY).classList.contains("tt_out_tile")
-        ) {
-          exitRoom(tt);
-          XYcalculator("tt_in_" + pad(tt), 1);
-          newTile();
-          enterNewRoom(tt);
-          monsterGenerator(tt);
-          tt++;
-        } else {
+          if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("empty_tile")
+          ) {
+            newTile();
+            movement--;
+          } else {
+            posX = pad(parseInt(posX) + 1);
+          }
+          //Tecla W
+        } else if (event.which == 87) {
           posY = pad(parseInt(posY) - 1);
+          if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("empty_tile")
+          ) {
+            newTile();
+            movement--;
+          } else {
+            posY = pad(parseInt(posY) + 1);
+          }
+          //Tecla D
+        } else if (event.which == 68) {
+          posX = pad(parseInt(posX) + 1);
+          if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("empty_tile")
+          ) {
+            newTile();
+            movement--;
+            //Entrada por la izquierda en una escalera de salida
+          } else if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("tt_out_tile")
+          ) {
+            exitRoom(tt);
+            XYcalculator("tt_in_" + pad(tt), 1);
+            newTile();
+            enterNewRoom(tt);
+            tt++;
+            endTurn();
+            nextTurn();
+          } else {
+            posX = pad(parseInt(posX) - 1);
+          }
+          //Tecla S
+        } else if (event.which == 83) {
+          posY = pad(parseInt(posY) + 1);
+          if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("empty_tile")
+          ) {
+            newTile();
+            movement--;
+            //Entrada por la arriba en una escalera de salida
+          } else if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("tt_out_tile")
+          ) {
+            exitRoom(tt);
+            XYcalculator("tt_in_" + pad(tt), 1);
+            newTile();
+            enterNewRoom(tt);
+            tt++;
+            endTurn();
+            nextTurn();
+          } else if (
+            document
+              .getElementById(posX + posY)
+              .classList.contains("monster_tile")
+          ) {
+            if (attacks > 0) {
+              arr_ind = parseInt(document.getElementById(posX + posY).getAttribute("name"));
+              combat.heroAttack(arr_ind,hero);
+              attacks--;
+              console.log(combat.monstersArray[arr_ind])
+            }
+            posY = pad(parseInt(posY) - 1);
+          } else {
+            posY = pad(parseInt(posY) - 1);
+          }
         }
-        //Tecla N --> Cambio de turno
-      } else if (event.which == 78) {
+        //Tecla P --> Cambio de turno
+      }
+      if (event.which == 80) {
         endTurn();
-        enemiesTurn();
+        //enemiesTurn();
         nextTurn();
       }
     }

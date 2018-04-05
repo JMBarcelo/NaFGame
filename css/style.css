@@ -12,7 +12,8 @@ body {
   width: 80px;
   border: solid 1px black;
   display: inline-block;
-  background: white;
+  background-size: cover;  
+  background-image: url("../img/floor.jpg");
 }
 
 .wall_tile {
@@ -30,7 +31,7 @@ body {
   border: solid 1px black;
   display: inline-block;
   background-size: cover;
-  background: orange;
+  background-image: url("../img/dwarf_warrior.jpg")
 }
 
 .tt_in_tile {
@@ -57,7 +58,7 @@ body {
   border: solid 1px black;
   display: inline-block;
   background-size: cover;
-  background: green;
+  background-image: url("../img/orc_archer.jpg")
 }
 
 .invis {

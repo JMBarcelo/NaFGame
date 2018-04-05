@@ -1,9 +1,10 @@
 // Warrior
-function Warrior(health, strength, movement, position) {
+function Warrior(health, strength, attacks, movement, position) {
   this.position = position;
   this.movement = movement;
   this.health = health;
   this.strength = strength;
+  this.attacks = attacks;
 }
 
 Warrior.prototype.attack = function() {
@@ -19,8 +20,8 @@ Warrior.prototype.move = function() {
 };
 
 // Hero
-function Hero(name, health, strength, movement, position) {
-  Warrior.call(this, health, strength, movement, position);
+function Hero(name, health, strength, attacks, movement, position) {
+  Warrior.call(this, health, strength, attacks, movement, position);
   this.name = name;
 }
 
@@ -37,8 +38,8 @@ Hero.prototype.receiveDamage = function(damage) {
 };
 
 // Monster
-function Monster(kindof, health, strength, movement, position) {
-  Soldier.call(this, health, strength, movement, position);
+function Monster(kindof, health, strength, attacks, movement, position) {
+  Warrior.call(this, health, strength, attacks, movement, position);
   this.kindof = kindof;
 }
 
@@ -49,10 +50,10 @@ Monster.prototype.receiveDamage = function(damage) {
   this.health -= damage;
   if (this.health > 0) {
     return (
-      "The" + this.kindof + " has received " + damage + " points of damage"
+      "The " + this.kindof + " has received " + damage + " points of damage"
     );
   } else {
-    return "The" + this.kindof + " has died in a horrible way";
+    return "The " + this.kindof + " has died in a horrible way";
   }
 };
 
@@ -65,8 +66,7 @@ Combat.prototype.addMonster = function(monsterObj) {
   this.monstersArray.push(monsterObj);
 };
 
-Combat.prototype.heroAttack = function(i) {
-  var hero = this.Hero;
+Combat.prototype.heroAttack = function(i,hero) {
   var monster = this.monstersArray[i];
   var msg = monster.receiveDamage(hero.attack());
   if (monster.health > 0) {
@@ -77,7 +77,7 @@ Combat.prototype.heroAttack = function(i) {
   return msg;
 };
 
-Combat.prototype.saxonAttack = function(i) {
+Combat.prototype.monsterAttack = function(i) {
   var hero = this.Hero;
   var monster = this.monstersArray[i];
   var msg = monster.receiveDamage(hero.attack());
