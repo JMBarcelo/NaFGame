@@ -8,75 +8,28 @@ body {
 }
 
 .empty_tile {
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: 100px;
   border: solid 1px black;
   display: inline-block;
-  background-size: cover;  
+  background-size: cover;
   background-image: url("../img/floor.jpg");
 }
 
-.wall_tile {
-  height: 80px;
-  width: 80px;
+.actor {
+  height: 100px;
+  width: 100px;
   border: solid 1px black;
-  display: inline-block;
+  position: absolute;
+  background-size: cover;
+  background-image: url("../img/dwarf_warrior.jpg");
+}
+
+.obstacle {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
   background-size: cover;
   background-image: url("../img/wall.jpg");
-}
-
-.warrior_tile {
-  height: 80px;
-  width: 80px;
-  border: solid 1px black;
-  display: inline-block;
-  background-size: cover;
-  background-image: url("../img/dwarf_warrior.jpg")
-}
-
-.tt_in_tile {
-  height: 80px;
-  width: 80px;
-  border: solid 1px black;
-  display: inline-block;
-  background-size: cover;
-  background: blue;
-}
-
-.tt_out_tile {
-  height: 80px;
-  width: 80px;
-  border: solid 1px black;
-  display: inline-block;
-  background-size: cover;
-  background: purple;
-}
-
-.monster_tile {
-  height: 80px;
-  width: 80px;
-  border: solid 1px black;
-  display: inline-block;
-  background-size: cover;
-  background-image: url("../img/orc_archer.jpg")
-}
-
-.invis {
-  background-size: cover;
-  background-image: url("../img/wall.jpg") !important;
-}
-
-.veiled {
-  position: relative;
-}
-
-.veiled::after {
-  content: "";
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  background: black;
-  opacity: 0.8;
-  top: 0;
-  left: 0;
 }
