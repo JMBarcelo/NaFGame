@@ -13,10 +13,10 @@ body {
   border: solid 1px black;
   display: inline-block;
   background-size: cover;
-  background-image: url("../img/floor.jpg");
+  background-image: url("../img/wall.jpg");
 }
 
-.actor {
+.hero {
   height: 100px;
   width: 100px;
   border: solid 1px black;
@@ -25,11 +25,62 @@ body {
   background-image: url("../img/dwarf_warrior.jpg");
 }
 
-.obstacle {
+.blue {
   height: 100px;
   width: 100px;
   border: solid 1px black;
   position: absolute;
+  background-color: blue;
   background-size: cover;
-  background-image: url("../img/wall.jpg");
+  background-image: url("../img/gemstone_blue.png");
+}
+
+.red {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
+  background-color: red;
+  background-size: cover;
+  background-image: url("../img/gemstone_red.jpg");
+}
+
+.green {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
+  background-color: green;
+  background-size: cover;
+  background-image: url("../img/gemstone_green.png");
+}
+
+.yellow {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
+  background-color: yellow;
+  background-size: cover;
+  background-image: url("../img/gemstone_yellow.jpg");
+}
+
+.purple {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
+  background-color: purple;
+  background-size: cover;
+  background-image: url("../img/gemstone_pink.png");
+}
+
+.black {
+  height: 100px;
+  width: 100px;
+  border: solid 1px black;
+  position: absolute;
+  background-color: black;
+  background-size: cover;
+  background-image: url("../img/gemstone_black.png");
 }
